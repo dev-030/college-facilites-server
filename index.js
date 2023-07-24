@@ -5,8 +5,8 @@ app.use(cors())
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://project:bmeGKsPKzpwrqxQt@cluster0.qcnne9d.mongodb.net/?retryWrites=true&w=majority";
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const uri = process.env.MONGO_URI;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -58,6 +58,16 @@ async function run() {
         }else{
             res.send({})
         }
+    })
+
+    app.post('/collegereview' ,async(req,res) => {
+        const update = {
+            $set : {
+                review: `${req.body.body.review}`
+            }
+        }
+        const result = await colleges.updateOne({_id: new ObjectId(`${req.body.body.collegeData._id}`)},update)
+        res.send(result)
     })
 
     app.post('/admission' ,async(req,res) => {
